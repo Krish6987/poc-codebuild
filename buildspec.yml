@@ -12,8 +12,8 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Compiling the Node.js code
-      - npm test
-      - npm run build
+      - ng test
+      - ng build --prod
   post_build:
     commands:
       - echo Build completed on `date`
