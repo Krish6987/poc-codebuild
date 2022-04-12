@@ -1,0 +1,22 @@
+.container{
+    height: 100vh;
+}
+
+button:focus {
+    outline: 0 !important;
+}
+
+.error-msg{
+    color: red;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

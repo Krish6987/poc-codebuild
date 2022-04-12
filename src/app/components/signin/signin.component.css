@@ -1,0 +1,12 @@
+a{
+    text-decoration: none;
+}
+
+.container{
+    height: 100vh;
+}
+
+.error-msg{
+    color: red;
+}
+  

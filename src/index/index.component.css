@@ -1,0 +1,85 @@
+.container{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+p.text{
+	text-indent: 10%;
+	font-size: large;
+    text-align: justify;
+}
+
+.space{
+	margin-bottom: 30px;
+}
+
+.text-justify {
+    text-align: justify;
+    font-size: medium;
+}
+
+.line-center{
+    margin:0;padding:0 10px;
+    background:#fff;
+    display:inline-block;
+}
+h2{
+    text-align:center;
+    position:relative;
+    z-index:2;
+}
+h2:after{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:0;
+    right:0;
+    border-top:solid 1px grey;
+    z-index:-1;
+}
+
+h1, h2, h3{
+    color: palevioletred;
+}
+
+h4{
+    color: plum;
+}
+
+.home-newsletter {
+    padding: 30px 0;
+    background: plum;
+}
+
+.home-newsletter .single {
+    max-width: 650px;
+    margin: 0 auto;
+    text-align: center;
+    color:white !important;
+    position: relative;
+    z-index: 2; 
+}
+.home-newsletter .single h3 {
+font-size: 22px;
+color: white;
+text-transform: uppercase;
+margin-bottom: 50px; 
+}
+.home-newsletter .single .form-control {
+height: 50px;
+background: rgba(255, 255, 255, 0.6);
+border-color: transparent;
+border-radius: 20px 0 0 20px; 
+}
+.home-newsletter .single .form-control:focus {
+box-shadow: none;
+border-color: #243c4f; 
+}
+.home-newsletter .single .btn {
+min-height: 50px; 
+border-radius: 0 20px 20px 0;
+background: #243c4f;
+color: #fff;
+}
+.input-group{
+    padding-bottom: 20px;
+}

@@ -1,0 +1,52 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+      <h2 class="text-center">Sign In Here</h2>
+      <span class="span error-msg" *ngIf='error=="incorrect"'><i class="fa fa-info-circle" aria-hidden="true"></i> 
+        Incorrect Password.</span>
+      <span class="span error-msg" *ngIf='error=="invalid"'><i class="fa fa-info-circle" aria-hidden="true"></i> 
+        User Doesn't exist. Please Signup.</span>
+      <form action="/signin" method="POST" [formGroup]="form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            formControlName="email"
+            placeholder="Enter email"
+            name="email"
+            autofocus
+          />
+        </div>
+        <div class="form-group">
+          <label for="pwd">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            formControlName="password"
+            id="password"
+            placeholder="Enter password"
+            name="password"
+          />
+        </div>
+        <div class="checkbox">
+          <label><input type="checkbox" name="remember" value="checked"/> Remember me</label>
+        </div>
+        <div class="form-group">
+          <label for="forgot-password"
+            >Forgot Password? <a href="/forgotpassword">click here</a></label
+          >
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!form.valid" (click)="signin(form.value)">Sign In</button>
+        <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+      </form>
+      <br><br>
+      <hr />
+        <a routerLink="/signup"><button type="submit" class="btn btn-warning col-sm-12 col-xs-12" width="100%">
+          New User?
+        </button></a>
+    </div>
+  </div>
+</div>

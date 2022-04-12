@@ -1,0 +1,165 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-6">
+      <h2>Account settings</h2>
+      <hr />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="col-sm-2"></div>
+      <div class="btn-group-vertical col-sm-8 col-xs-12" role="group" aria-label="...">
+        <button type="button" class="btn btn-default text-left">Your Orders</button>
+        <button type="button" class="btn btn-default text-left" (click)="manage()">Manage Address</button>
+        <button type="button" class="btn btn-default text-left" (click)="edit()">Edit Profile</button>
+        <button type="button" class="btn btn-default text-left" (click)="change()">Change Password</button>
+        <button type="button" class="btn btn-default text-left" (click)="logout()">Logout</button>
+        <br />
+      </div>
+    </div>
+    <div class="col-sm-5" *ngIf="clickManage==true">
+      <form [formGroup]="addressForm">
+        <h4>Manage Address <i class="fa fa-spinner fa-spin" *ngIf="loading"></i></h4>
+        <div class="error-msg" *ngIf='message=="true"'>
+          <i class="fa fa-exclamation" aria-hidden="true"></i> Details Updated.
+        </div>
+        <div class="form-group">
+          <label for="address">H.No./ Plot.No./ Street</label>
+          <textarea
+            id="address"
+            name="address"
+            formControlName="address"
+            class="form-control"
+            placeholder="H.No./ Plot.No./ Street.."
+            style="height: 100px"
+          >
+          </textarea>
+        </div>
+        <div class="form-group">
+          <label for="country">Country</label>
+          <select class="form-control" (change)="changeCountry($event.target.value)" formControlName="country">
+            <option value="" default>---Select Country---</option>
+            <option *ngFor ="let count of countries" value="{{count.name}}">{{count.name}} </option>
+        </select>
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <select class="form-control" formControlName="city">
+            <option value="" default>---Select City---</option>
+            <option *ngFor ="let city of cities" value="{{city}}">{{city}} </option>
+        </select>
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!addressForm.valid" (click)="manageAddress(addressForm.value)">Edit</button>
+      </form>
+    </div>
+    <div class="col-sm-5" *ngIf="clickEdit==true">
+      <form [formGroup]="form">
+        <h4>Change Account Details <i class="fa fa-spinner fa-spin" *ngIf="loading"></i></h4>
+        <div class="error-msg" *ngIf='message=="true"'>
+          <i class="fa fa-exclamation" aria-hidden="true"></i> Details Updated.
+        </div>
+        <div class="form-group">
+          <label for="title">Title</label>
+          <select
+            class="form-control"
+            (change)="changeTitle($event.target.value)"
+            formControlName="title"
+          >
+            <option value="Mr" selected>Mr</option>
+            <option value="Mrs">Mrs</option>
+            <option value="Ms">Ms</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fname">First Name</label>
+          <input
+            type="text"
+            id="fname"
+            name="firstname"
+            formControlName="firstname"
+            class="form-control"
+            placeholder="Your first name.."
+          />
+        </div>
+        <div class="form-group">
+          <label for="lname">Last Name</label>
+          <input
+            type="text"
+            id="lname"
+            name="lastname"
+            formControlName="lastname"
+            class="form-control"
+            placeholder="Your last name.."
+          />
+        </div>
+        <div class="form-group">
+          <label for="mobile">Mobile</label>
+          <input
+            type="number"
+            id="mobile"
+            name="mobile"
+            formControlName="mobile"
+            class="form-control"
+            placeholder="Your mobile number.."
+          />
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!form.valid" (click)="editDetails(form.value)">Edit</button>
+      </form>
+    </div>
+    <div class="col-sm-5" *ngIf="clickChange==true">
+      <form [formGroup]="passwordForm">
+        <h4>Change Password</h4>
+        <div class="error-msg" *ngIf="passwordForm.value.cupassword === passwordForm.value.npassword && passwordForm.value.cupassword !== ''">
+          <i class="fa fa-exclamation" aria-hidden="true"></i> Old and New password shouldn't be same.
+        </div>
+        <div class="error-msg" *ngIf='message=="true"'>
+          <i class="fa fa-exclamation" aria-hidden="true"></i> Password has been changed.
+        </div>
+        <div class="error-msg" *ngIf='message=="incorrect"'>
+          <i class="fa fa-exclamation" aria-hidden="true"></i> Current password is incorrect.
+        </div>
+        <div class="form-group">
+          <label for="cupassword">Current Password</label>
+          <input
+            type="password"
+            id="cupassword"
+            name="cupassword"
+            formControlName="cupassword"
+            class="form-control"
+            placeholder="Your current password.."
+          />
+        </div>
+        <div class="form-group">
+          <label for="npassword">New Password</label>
+          <input
+            type="password"
+            id="npassword"
+            name="npassword"
+            formControlName="npassword"
+            class="form-control"
+            placeholder="Your new password.."
+          />
+          <span class="span" *ngIf="passwordForm.value.npassword.length < 6"><i class="fa fa-info-circle" aria-hidden="true"></i> 
+            Passwords must contain atleast 6 characters.</span>
+        </div>
+        <div class="form-group">
+          <label for="mobile">Confirm New Password</label>
+          <input
+            type="password"
+            id="cpassword"
+            name="cpassword"
+            formControlName="cpassword"
+            class="form-control"
+            placeholder="Confirm new password.."
+          />
+          <div class="error-msg" *ngIf="passwordForm.value.npassword !== passwordForm.value.cpassword">
+            <i class="fa fa-exclamation" aria-hidden="true"></i> New Password and Confirm Password didn't match.
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!passwordForm.valid" (click)="changePassword(passwordForm.value)">Change</button>
+        <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+      </form>
+    </div>
+  </div>
+</div>

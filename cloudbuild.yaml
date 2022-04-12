@@ -1,0 +1,84 @@
+steps:   
+  - id: Build the Image with commit id for version
+    name: gcr.io/cloud-builders/docker
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/frontend:$SHORT_SHA", "."]
+   
+  - id: Tag the image as latest
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', 'gcr.io/$PROJECT_ID/frontend:$SHORT_SHA', 'gcr.io/$PROJECT_ID/frontend:latest']  
+   
+  - id: Push image with version tag
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/frontend:$SHORT_SHA']
+   
+  - id: Push image with latest tag
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/frontend:latest']
+  
+  - id: Get Kubernetes Yaml Script  
+    name: 'gcr.io/cloud-builders/gsutil'
+    args: ['cp', 'gs://epam_poc_bucket/k8s/k8s.yaml', '/secrets/k8s.yaml']
+    volumes:
+    - name: 'secrets'
+      path: '/secrets'
+
+  - id: Get Service Account Key  
+    name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash' 
+    args:
+    - '-c'
+    - |
+        gcloud secrets versions access --secret=service_account_key latest > /secrets/key.json
+        sed -i 's/frontend:latest/frontend:$SHORT_SHA/g' /secrets/k8s.yaml
+
+    volumes:
+    - name: 'secrets'
+      path: '/secrets'
+
+  - id: Create Secret on to Kubernetes
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    volumes:
+    - name: 'secrets'
+      path: '/secrets'
+    args:
+      - '-c'
+      - |
+          gcloud container clusters get-credentials poc-gke-cluster --zone us-central1-a --project cloudx-assoc-gcpdev
+          if kubectl get secret | grep "service-account-key"; then echo "secret already exists"; else kubectl create secret generic service-account-key --from-file=service_account.json=/secrets/key.json; fi;
+    # args: ["create", "secret", "generic", "service-account-key", "--from-file=service_account.json=/secrets/key.json"]
+    env:
+      - CLOUDSDK_COMPUTE_ZONE=us-central1-a
+      - CLOUDSDK_CONTAINER_CLUSTER=poc-gke-cluster
+      - KUBECONFIG=/workspace/.kube/config
+      - PROJECT_ID=cloudx-assoc-gcpdev
+
+  - id: Deploy yaml on to Kubernetes
+    name: gcr.io/cloud-builders/kubectl
+    volumes:
+    - name: 'secrets'
+      path: '/secrets'
+    args: ["apply", "-f", "/secrets/k8s.yaml"]
+    env:
+      - CLOUDSDK_COMPUTE_ZONE=us-central1-a
+      - CLOUDSDK_CONTAINER_CLUSTER=poc-gke-cluster
+      - KUBECONFIG=/workspace/.kube/config
+  
+  # - id: Helm Install GCS Plugin
+  #   name: gcr.io/$PROJECT_ID/helm
+  #   args: ["plugin", "install", "https://github.com/hayorov/helm-gcs.git"]
+  #   env:
+  #     - TILLERLESS=true
+  #     - CLOUDSDK_COMPUTE_ZONE=us-central1-a
+  #     - CLOUDSDK_CONTAINER_CLUSTER=terraform-gke-cluster  
+
+  # - id: Helm Install Charts
+  #   name: gcr.io/$PROJECT_ID/helm
+  #   args: ["upgrade", "--install", "poc-charts", "helm-repo/poc-helm-charts", "--set", "frontend.image.tag=$SHORT_SHA"]
+  #   env:
+  #     - TILLERLESS=true
+  #     - HELM_REPO_URL=gs://epam_poc_bucket/helm
+  #     - HELM_REPO_NAME=helm-repo
+  #     - CLOUDSDK_COMPUTE_ZONE=us-central1-a
+  #     - CLOUDSDK_CONTAINER_CLUSTER=terraform-gke-cluster
+timeout: 1000s
