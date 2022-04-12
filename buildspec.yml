@@ -8,11 +8,15 @@ phases:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
+  test:
+    commands:
+      - echo Test started on `date`
+      - echo Testing the Node.js code
+      # - ng test
   build:
     commands:
       - echo Build started on `date`
       - echo Compiling the Node.js code
-      - ng test
       - ng build --prod
   post_build:
     commands:
