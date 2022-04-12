@@ -10,6 +10,7 @@ phases:
       - npm install
   build:
     commands:
+      - echo Running on branch ${CODEBUILD_SOURCE_VERSION}
       - echo Build started on `date`
       - echo Compiling the Node.js code
       - ng build --prod
