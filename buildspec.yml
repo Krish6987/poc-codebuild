@@ -8,12 +8,16 @@ phases:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
+      - npm install -g @angular/cli 
   build:
     commands:
       - echo Running on branch ${CODEBUILD_SOURCE_VERSION}
       - echo Build started on `date`
       - echo Compiling the Node.js code
       - ng build --prod
+      - echo Test started on `date`
+      - echo Testing the Node.js code
+      - ng test
   post_build:
     commands:
       - echo Build completed on `date`
