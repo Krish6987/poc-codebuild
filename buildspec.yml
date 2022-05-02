@@ -17,16 +17,22 @@ phases:
           GIT_BRANCH="$(git rev-parse HEAD | xargs git name-rev | cut -d' ' -f2 | sed 's/remotes\/origin\///g')";
         fi
       - echo GIT_BRANCH - $GIT_BRANCH
-      - echo Build started on `date`
+      - |
+        if ["$GIT_BRANCH" == "master"] ; then
+          echo Build started on `date`;
+          ng build
+        else
+          echo Test started on `date`
+          ng test;
+        fi
       - echo Compiling the Node.js code
-      - ng build --prod
-      - echo Test started on `date`
-      - echo Testing the Node.js code
-      - ng test
   post_build:
     commands:
+      - |
+        if ["$GIT_BRANCH" == "master"] ; then
+          cp . results/.
+        fi
       - echo Build completed on `date`
-
 artifacts:
   files:
-    "**/*"
+    "results/**/*"
