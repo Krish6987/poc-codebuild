@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 14.15
+      nodejs: 14
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
@@ -20,9 +20,9 @@ phases:
       - |
         if ["$GIT_BRANCH" == "master"] ; then
           echo Build started on `date`;
-          ng build
-        else
-          echo Test started on `date`
+          ng build;
+        elif ["$GIT_BRANCH" != "master"]; then
+          echo Test started on `date`;
           ng test;
         fi
       - echo Compiling the Node.js code
