@@ -18,18 +18,17 @@ phases:
         fi
       - echo GIT_BRANCH - $GIT_BRANCH
       - |
-        if ["$GIT_BRANCH" == "master"] ; then
+        if ["$GIT_BRANCH" = "master"] ; then
           echo Build started on `date`;
           ng build;
-        elif ["$GIT_BRANCH" != "master"]; then
+        else
           echo Test started on `date`;
           ng test;
         fi
-      - echo Compiling the Node.js code
   post_build:
     commands:
       - |
-        if ["$GIT_BRANCH" == "master"] ; then
+        if ["$GIT_BRANCH" = "master"] ; then
           cp . results/.
         fi
       - echo Build completed on `date`
